@@ -10,6 +10,14 @@
 //
 // You will need to complete 1b as well before you will be able to run this program successfully.
 
+//use Shot::*;
+
+enum Shot {
+    Bullseye,
+    Hit(f64),
+    Miss,
+}
+
 impl Shot {
     // Here is a method for the `Shot` enum you just defined.
     fn points(self) -> i32 {
@@ -18,6 +26,19 @@ impl Shot {
         // - return 2 points if `self` is a `Shot::Hit(x)` where x < 3.0
         // - return 1 point if `self` is a `Shot::Hit(x)` where x >= 3.0
         // - return 0 points if `self` is a Miss
+        match self {
+            Shot::Bullseye => 5,
+            Shot::Miss => 0,
+            Shot::Hit(distance) if distance < 3.0 => 2,
+            Shot::Hit(distance) => 1,
+            // Shot::Hit(distance) => {
+            //     if distance < 3.0 {
+            //         2
+            //     } else {
+            //         1
+            //     }
+            // },
+        }
     }
 }
 
@@ -34,10 +55,32 @@ fn main() {
     //      - Less than 1.0 -- `Shot::Bullseye`
     //      - Between 1.0 and 5.0 -- `Shot::Hit(value)`
     //      - Greater than 5.0 -- `Shot::Miss`
+    arrow_coords.iter().for_each( |coord| {
+        coord.print_description();
+        shots.push( match coord.distance_from_center() {
+            distance if distance < 1.0 => Shot::Bullseye,
+            distance if distance < 5.0 => Shot::Hit(distance),
+            _ => Shot::Miss,
+        })
+    });
 
+    // for coord in arrow_coords {
+    //     coord.print_description();
+    //     shots.push(
+    //         if coord.distance_from_center() < 1.0 {
+    //             Shot::Bullseye
+    //         } else if coord.distance_from_center() >= 1.0 && coord.distance_from_center() <= 5.0 {
+    //             Shot::Hit(coord.distance_from_center())
+    //         } else {
+    //             Shot::Miss
+    //         })
+    // }
 
     let mut total = 0;
     // 3. Finally, loop through each shot in shots and add its points to total
+    for shot in shots {
+        total += shot.points();
+    }
 
     println!("Final point total is: {}", total);
 }
